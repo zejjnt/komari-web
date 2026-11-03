@@ -182,6 +182,7 @@ type AutoDiscoveryInstallOptions = {
   memoryIncludeCache: boolean;
   getIpAddrFromNic: boolean;
   enableGpu: boolean;
+  canSudo: boolean;
   ghproxy: string;
   dir: string;
   serviceName: string;
@@ -241,6 +242,7 @@ const AutoDiscoverySection = ({
       memoryIncludeCache: false,
       getIpAddrFromNic: false,
       enableGpu: false,
+      canSudo: true,
       ghproxy: "",
       dir: "",
       serviceName: "",
@@ -305,6 +307,9 @@ const AutoDiscoverySection = ({
     }
     if (installOptions.enableGpu) {
       args.push("--gpu");
+    }
+    if (installOptions.canSudo) {
+      let sudoPrefix = "sudo ";
     }
     const ghproxy = installOptions.ghproxy.trim();
     if (enableGhproxy && ghproxy) {
@@ -382,7 +387,7 @@ const AutoDiscoverySection = ({
     switch (selectedPlatform) {
       case "linux":
         finalCommand =
-          `wget -qO- ${quoteShellArg(scriptUrl)} | sudo bash -s -- ` +
+          `wget -qO- ${quoteShellArg(scriptUrl)} | ${sudoPrefix}bash -s -- ` +
           quoteShellArgs(args);
         break;
       case "windows":
@@ -657,6 +662,28 @@ const AutoDiscoverySection = ({
                 }
               >
                 {t("admin.nodeTable.enableGpuMonitoring", "启用详细 GPU 监控")}
+              </label>
+            </Flex>
+            <Flex gap="2" align="center">
+              <Checkbox
+                checked={installOptions.canSudo}
+                onCheckedChange={(checked) =>
+                  setInstallOptions((prev) => ({
+                    ...prev,
+                    canSudo: Boolean(checked),
+                  }))
+                }
+              />
+              <label
+                className="text-sm font-normal cursor-pointer"
+                onClick={() =>
+                  setInstallOptions((prev) => ({
+                    ...prev,
+                    canSudo: !prev.canSudo,
+                  }))
+                }
+              >
+                {t("admin.nodeTable.canSudo", "Install using sudo")}
               </label>
             </Flex>
           </div>
@@ -1515,6 +1542,7 @@ type InstallOptions = {
   memoryIncludeCache: boolean;
   getIpAddrFromNic: boolean;
   enableGpu: boolean;
+  canSudo: boolean;
   ghproxy: string;
   dir: string;
   serviceName: string;
@@ -1543,6 +1571,7 @@ function GenerateCommandButton({
     memoryIncludeCache: false,
     getIpAddrFromNic: false,
     enableGpu: false,
+    canSudo: true,
     ghproxy: "",
     dir: "",
     serviceName: "",
@@ -1608,6 +1637,9 @@ function GenerateCommandButton({
     }
     if (installOptions.enableGpu) {
       args.push("--gpu");
+    }
+    if (installOptions.canSudo) {
+      let sudoPrefix = "sudo ";
     }
     const ghproxy = installOptions.ghproxy.trim();
     if (enableGhproxy && ghproxy) {
@@ -1682,7 +1714,7 @@ function GenerateCommandButton({
     switch (selectedPlatform) {
       case "linux":
         finalCommand =
-          `wget -qO- ${quoteShellArg(scriptUrl)} | sudo bash -s -- ` +
+          `wget -qO- ${quoteShellArg(scriptUrl)} | ${sudoPrefix}bash -s -- ` +
           quoteShellArgs(args);
         break;
       case "windows":
@@ -1897,6 +1929,29 @@ function GenerateCommandButton({
                   }}
                 >
                   {t("admin.nodeTable.enableGpuMonitoring", "启用详细 GPU 监控")}
+                </label>
+              </Flex>
+            </div>
+            <Flex gap="2" align="center">
+                <Checkbox
+                  checked={installOptions.canSudo}
+                  onCheckedChange={(checked) => {
+                    setInstallOptions((prev) => ({
+                      ...prev,
+                      canSudo: Boolean(checked),
+                    }));
+                  }}
+                />
+                <label
+                  className="text-sm font-normal"
+                  onClick={() => {
+                    setInstallOptions((prev) => ({
+                      ...prev,
+                      canSudo: !prev.canSudo,
+                    }));
+                  }}
+                >
+                  {t("admin.nodeTable.canSudo", "Install using sudo")}
                 </label>
               </Flex>
             </div>
