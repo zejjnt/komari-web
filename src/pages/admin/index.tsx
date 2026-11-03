@@ -309,7 +309,7 @@ const AutoDiscoverySection = ({
       args.push("--gpu");
     }
     if (installOptions.canSudo) {
-      let sudoPrefix = "sudo ";
+      const sudoPrefix = "sudo ";
     }
     const ghproxy = installOptions.ghproxy.trim();
     if (enableGhproxy && ghproxy) {
@@ -387,7 +387,7 @@ const AutoDiscoverySection = ({
     switch (selectedPlatform) {
       case "linux":
         finalCommand =
-          `wget -qO- ${quoteShellArg(scriptUrl)} | ${sudoPrefix}bash -s -- ` +
+          `wget -qO- ${quoteShellArg(scriptUrl)} | ${quoteShellArg(sudoPrefix)}bash -s -- ` +
           quoteShellArgs(args);
         break;
       case "windows":
@@ -1639,7 +1639,7 @@ function GenerateCommandButton({
       args.push("--gpu");
     }
     if (installOptions.canSudo) {
-      let sudoPrefix = "sudo ";
+      const sudoPrefix = "sudo ";
     }
     const ghproxy = installOptions.ghproxy.trim();
     if (enableGhproxy && ghproxy) {
@@ -1714,7 +1714,7 @@ function GenerateCommandButton({
     switch (selectedPlatform) {
       case "linux":
         finalCommand =
-          `wget -qO- ${quoteShellArg(scriptUrl)} | ${sudoPrefix}bash -s -- ` +
+          `wget -qO- ${quoteShellArg(scriptUrl)} | ${quoteShellArg(sudoPrefix)}bash -s -- ` +
           quoteShellArgs(args);
         break;
       case "windows":
